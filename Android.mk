@@ -28,7 +28,9 @@ include $(BUILD_SHARED_LIBRARY)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE:= libpower
-
+ifeq ($(BOARD_USES_QCOM_HARDWARE),true)
+        LOCAL_CFLAGS += -DQCOM_HARDWARE
+endif
 LOCAL_SRC_FILES += power/power.c
 
 include $(BUILD_STATIC_LIBRARY)
