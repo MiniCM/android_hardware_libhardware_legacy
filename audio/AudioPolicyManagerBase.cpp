@@ -953,7 +953,13 @@ status_t AudioPolicyManagerBase::setStreamVolumeIndex(AudioSystem::stream_type s
                                                       int index,
                                                       audio_devices_t device)
 {
-
+    ALOGV("setStreamVolumeIndex() stream %d, device %04x, index %d",
+          stream, device, index);
+    if (device == 0 && isInCall()) {
+        device = AUDIO_DEVICE_OUT_DEFAULT;
+        ALOGV("now: stream %d, device %04x, index %d",
+          stream, device, index);
+    }
     if ((index < mStreams[stream].mIndexMin) || (index > mStreams[stream].mIndexMax)) {
         return BAD_VALUE;
     }
@@ -2372,7 +2378,12 @@ uint32_t AudioPolicyManagerBase::setOutputDevice(audio_io_handle_t output,
     //  - the requested device is 0
     //  - the requested device is the same as current device and force is not specified.
     // Doing this check here allows the caller to call setOutputDevice() without conditions
-    if ((device == 0 || device == prevDevice) && !force) {
+    if (device == 0 && device != prevDevice && isInCall()) {
+        device = AUDIO_DEVICE_OUT_EARPIECE;
+        ALOGV("now: device is device %04x", device);
+    }
+
+    if ((device == 0  || device == prevDevice) && !force) {
         ALOGV("setOutputDevice() setting same device %04x or null device for output %d", device, output);
         return muteWaitMs;
     }
