@@ -66,8 +66,12 @@ enum audio_source {
     AUDIO_SOURCE_FM_RX = 8,
     AUDIO_SOURCE_FM_RX_A2DP = 9,
 #endif
+#ifdef STE_FM
+    AUDIO_SOURCE_FM_RADIO_RX = 8,
+    AUDIO_SOURCE_MAX = AUDIO_SOURCE_FM_RADIO_RX,
+#else
     AUDIO_SOURCE_MAX = AUDIO_SOURCE_VOICE_COMMUNICATION,
-
+#endif
     AUDIO_SOURCE_LIST_END  // must be last - used to validate audio source type
 };
 
@@ -257,6 +261,10 @@ public:
         DEVICE_OUT_PROXY = 0x40000,
         DEVICE_OUT_DEFAULT = 0x80000,
 #else
+#if defined(STE_FM)
+        DEVICE_OUT_FM = 0x2000,
+        DEVICE_OUT_FM_TX = 0x10000,
+#endif
         DEVICE_OUT_DEFAULT = 0x8000,
 #endif
         DEVICE_OUT_ALL = (DEVICE_OUT_EARPIECE | DEVICE_OUT_SPEAKER | DEVICE_OUT_WIRED_HEADSET |
@@ -268,6 +276,9 @@ public:
                 DEVICE_OUT_ANC_HEADSET | DEVICE_OUT_ANC_HEADPHONE |
                 DEVICE_OUT_FM | DEVICE_OUT_FM_TX | DEVICE_OUT_DIRECTOUTPUT |
                 DEVICE_OUT_PROXY |
+#endif
+#if defined(STE_FM)
+                DEVICE_OUT_FM | DEVICE_OUT_FM_TX |
 #endif
                 DEVICE_OUT_DEFAULT),
         DEVICE_OUT_ALL_A2DP = (DEVICE_OUT_BLUETOOTH_A2DP | DEVICE_OUT_BLUETOOTH_A2DP_HEADPHONES |
@@ -295,6 +306,9 @@ public:
         DEVICE_IN_AUX_DIGITAL = 0x200000,
         DEVICE_IN_VOICE_CALL = 0x400000,
         DEVICE_IN_BACK_MIC = 0x800000,
+#ifdef STE_FM
+        DEVICE_IN_FM_RADIO_RX = 0x1000000,
+#endif
 #endif
         DEVICE_IN_DEFAULT = 0x80000000,
 
@@ -303,6 +317,9 @@ public:
                 DEVICE_IN_VOICE_CALL | DEVICE_IN_BACK_MIC |
 #if defined(QCOM_HARDWARE) && !defined(USES_AUDIO_LEGACY)
                 DEVICE_IN_ANC_HEADSET | DEVICE_IN_FM_RX | DEVICE_IN_FM_RX_A2DP |
+#endif
+#ifdef STE_FM
+                DEVICE_IN_FM_RADIO_RX |
 #endif
                 DEVICE_IN_DEFAULT)
     };
